@@ -39,7 +39,7 @@ $this->create('ocmessage_sendMessage', '/message/sendMessage')->action(
 $this->create('ocmessage_setMessageRead', '/message/setMessageRead')->action(
 		function($params){
 	// call the index method on the class PageController
-	App::main('PageController', 'setMessageRead', $params, new DIContainer());
+	App::main('MessageController', 'setMessageRead', $params, new DIContainer());
 }
 );
 $this->create('ocmessage_setAllMessagesRead', '/message/setAllMessagesRead')->action(

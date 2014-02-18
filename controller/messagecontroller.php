@@ -127,21 +127,12 @@ class MessageController extends Controller{
 	}
 	
 	public function setMessageRead(){
-		
-		$user = $this->params("user");
-		if (!isset($user)){
-			$user = "";
-		}
+
+		$msg_id = $this->params("msg_id");
+		$msg = new MessageRepository();
+		$msgs = $msg->setMessageRead($msg_id);
 		$error = "";
-		$msgs;
-		if ($user == "" || User::userExists($user)){
-			$msg_id = $this->params("msg_id");
-			$msg = new MessageRepository();
-			$msgs = $msg->setMessageRead($msg_id);
-		} else {
-			
-			$error = "User does not exists! ($user)";
-		}
+
 		return new JSONResponse(array('error' => $error,
 									'return' => isset($msgs)));
 	}

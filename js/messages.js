@@ -24,16 +24,71 @@ msg.controller("tabCtrl", ["$scope", function ($scope){
 
 msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
 
-		$http({method:"post", url: route.generate('ocmessage_getMessages', {user: ""})}).success(function (data){
-			if (data.error !== ""){
-				alert("Error: "+ data.error);
-			} else {
-				$scope.messages = data.return;
+	$http(	{method:"post", 
+				url: route.generate('ocmessage_getMessages', {user: ""})
+			})
+	.success(
+			function (data){
+				if (data.error !== ""){
+					alert("Error: "+ data.error);
+				} else {
+					$scope.messages = data.return;
+				}
 			}
-		}).error(function(data){
-			
-			alert("error:"+data.error);});
+	)
+	.error(function(data){
+		alert("error:"+data.error);
+	});
 	
+	$scope.markRead = function( id ){
+		$http({method:"post", url: route.generate('ocmessage_setMessageRead', {msg_id: id})}).success(function (data){
+			
+		}).error(function(data){alert("error:"+data.error);});
+	}
+		
+	$scope.humanTime = function( phpTimestamp ){
+		var timestamp = phpTimestamp*1000;
+		
+		var date = new Date(timestamp);
+		var dayOfMonth = date.getDate();
+		var month = date.getMonth();
+		var fullYear = date.getFullYear();
+		var hours = date.getHours();
+		var minutes = date.getMinutes();
+		var seconds = date.getSeconds();
+		
+		var now = new Date();
+		var nowDayOfMonth = now.getDate();
+		var nowMonth = now.getMonth();
+		var nowFullYear = now.getFullYear();
+		var nowHours = now.getHours();
+		var nowMinutes = now.getMinutes();
+		var nowSeconds = now.getSeconds();
+		
+		var returnTime = "";
+		if (""+nowDayOfMonth+nowMonth+nowFullYear == ""+dayOfMonth+month+fullYear ){
+			if (hours+2 >= nowHours ){
+				returnTime = "heute um "+hours+":"+minutes;
+			} else {
+				if (hours + 1 >= nowHours){
+					returnTime = "vor einer Stunde";
+				} else {
+					returnTime = "vor wenigen Minuten";
+				}
+			}
+		} else {
+
+			if (""+fullYear+month != ""+nowFullYear+nowMonth || dayOfMonth+2 > nowDayOfMonth){
+				returnTime = "am "+dayOfMonth+"."+month+"."+fullYear+", um "+hours+":"+minutes;;
+			} else if(dayOfMonth+1 >= nowDayOfMonth) {
+				returnTime = "vorgestern um "+hours+":"+minutes;;
+			} else {
+				returnTime = "gestern um "+hours+":"+minutes;;
+			}
+		}
+    	return returnTime;
+	}
+		
 	$scope.getUsers = function (){
 		if ($scope.msg_to == "alle" ||$scope.msg_to == "all"){
 			$scope.msg_to = "";
