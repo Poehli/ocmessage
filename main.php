@@ -19,13 +19,21 @@
 	</div>
 	
 	<div ng-show="isTab('read')">
-  		<div class="message_wrapper"  ng-controller="msgCtrl">	
-  			<div ng-repeat="message in messages">
+  		<div class="message_wrapper">	
+  			<div ng-repeat-start="message in messages">
   				<span class="message">
-  					<h2 class="msg_subject" ng-click="msg_message.message_id = 'true'" ng-init="msg_message.message_id = 'false'">{{ message.message_subject }}</h2>
-  					<p class="msg_content" ng-show="msg_message.message_id == 'true'">{{ message.message_content }}</p> 
+  					<h2 class="msg_subject" ng-click="msg_{{ message.message_id }} = true" ng-init="msg_{{ message.message_id }} = false">{{ message.message_subject }}</h2>
+  					<p class="msg_content" ng-show="msg_{{ message.message_id }} == true">{{ message.message_content }}</p> 
   				</span>
   			</div>
+    		<!-- <?php foreach($_["messages"] as $name){ ?>
+    		<div>
+    		<span class="message">
+      		<h2 class="msg_subject" ng-click="msg_<?php p($name['message_id']);?>= 'true'" ng-init="msg_<?php p($name['message_id']);?>='false'"><?php p($name["message_subject"]); ?></h2><span class="msg_time"><?php p($name["message_timestamp"]); ?></span>
+      		<p class="msg_content" ng-show="msg_<?php p($name['message_id']);?> == 'true'"><?php p($name["message_content"]); ?></p>
+      		</span>
+      		</div>
+    		<?php } ?> -->
 		</div>
   	</div>
   	

@@ -1,4 +1,5 @@
 var msg = angular.module("message",["OC"]);
+var route = OC.Router;
 
 msg.controller("tabCtrl", ["$scope", function ($scope){
 
@@ -22,6 +23,16 @@ msg.controller("tabCtrl", ["$scope", function ($scope){
 }]);
 
 msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
+
+		$http({method:"post", url: route.generate('ocmessage_getMessages', {user: ""})}).success(function (data){
+			if (data.error !== ""){
+				alert("Error: "+ data.error);
+			} else {
+				$scope.messages = data.return;
+			}
+		}).error(function(data){
+			
+			alert("error:"+data.error);});
 	
 	$scope.getUsers = function (){
 		if ($scope.msg_to == "alle" ||$scope.msg_to == "all"){
@@ -50,11 +61,10 @@ msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
 			});
 		
 		// Testumgebung
-		$http({method:"post", url: OC.Router.generate('ocmessage_getSendMessages', {user: ""})}).success(function (data){
+		$http({method:"post", url: route.generate('ocmessage_getSendMessages', {user: ""})}).success(function (data){
 			alert("success: "+data.return[0].message_to);
 		}).error(function(data){alert("error:"+data.error);});
 		// Ende Testumgebung
 		
-		alert(OC.Router.generate('ocmessage_getSendMessages', {no: ""}))
 	};
 }]);

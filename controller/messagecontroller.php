@@ -25,11 +25,11 @@ class MessageController extends Controller{
 			$msg = new MessageRepository();
 			$msgs = $msg->getMessages();
 			
-			return new JSONResponse(array('error' => $error_msg,	
+			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
 		} else {
 			$error = "user does not exist ($user)";
-			return new JSONResponse(array('error' => $error_msg));
+			return new JSONResponse(array('error' => $error));
 		}
 		
 		return new JSONResponse(array('error' => $error_msg));
