@@ -13,7 +13,11 @@ class MessageController extends Controller{
 	public function __construct(API $api,Request $request){
 		parent::__construct($api, $request);
 	}
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function getMessages(){
 		$user = $this->params("user");
 		if (!isset($user)){
@@ -32,9 +36,13 @@ class MessageController extends Controller{
 			return new JSONResponse(array('error' => $error));
 		}
 		
-		return new JSONResponse(array('error' => $error_msg));
+		return new JSONResponse(array('error' => $error));
 	}
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function getSendMessages(){
 		$user = $this->params("user");
 		if (!isset($user)){
@@ -46,17 +54,21 @@ class MessageController extends Controller{
 			$msg = new MessageRepository();
 			$msgs = $msg->getSendMessages();
 			
-			return new JSONResponse(array('error' => $error_msg,	
+			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
 		} else {
 			$error = "user does not exist ($user)";
-			return new JSONResponse(array('error' => $error_msg));
+			return new JSONResponse(array('error' => $error));
 		}
 		
-		return new JSONResponse(array('error' => $error_msg));
+		return new JSONResponse(array('error' => $error));
 	}
 	
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function getUnreadMessages(){		
 		$user = $this->params("user");
 		if (!isset($user)){
@@ -68,21 +80,25 @@ class MessageController extends Controller{
 			$msg = new MessageRepository();
 			$msgs = $msg->getUnreadMessages();
 			
-			return new JSONResponse(array('error' => $error_msg,	
+			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
 		} else {
 			$error = "user does not exist ($user)";
-			return new JSONResponse(array('error' => $error_msg));
+			return new JSONResponse(array('error' => $error));
 		}
 		
-		return new JSONResponse(array('error' => $error_msg));
+		return new JSONResponse(array('error' => $error));
 	}
 
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function sendMessage(){
 		$splitsign = array(";", ",");
 		
-		$now = new DateTime();
+		$now = new \DateTime();
 		$now = $now->getTimestamp();
 		
 		$users = array($this->params('msg_to'));
@@ -97,7 +113,7 @@ class MessageController extends Controller{
 			$users = $tmpuser;
 		}
 		
-		$error_msg ="";
+		$error ="";
 		foreach ($users as $user){
 			$user = trim($user);
 			if ($user == ""){
@@ -105,27 +121,31 @@ class MessageController extends Controller{
 			}
 		
 			if (! User::userExists($user)){
-				$error_msg .= "User does not exist: $user ;";
+				$error .= "User does not exist: $user ;";
 				continue;
 			}
 		
 		
-			$message = new \OCA\test\Controller\MessagesQuery();
+			$message = new \OCA\OCMessage\Db\MessageRepository();
 			$ok = $message->sendMessage($user, $this->params("msg_subject"), $this->params("msg_content"));
 		
 		
 			if (!isset($ok) || !$ok){
-				$error_msg .= "An unknown error occured! ;";
+				$error .= "An unknown error occured! ;";
 			}
 		}
 		
 		
 		
-		return new JSONResponse(array('error' => $error_msg,
+		return new JSONResponse(array('error' => $error,
 									'return' => isset($ok)));
 	
 	}
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function setMessageRead(){
 
 		$msg_id = $this->params("msg_id");
@@ -137,8 +157,43 @@ class MessageController extends Controller{
 									'return' => isset($msgs)));
 	}
 	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
+	public function setMessageDeletedOwner(){
 	
+		$msg_id = $this->params("msg_id");
+		$msg = new MessageRepository();
+		$msgs = $msg->setMessageDeletedFrom($msg_id);
+		$error = "";
 	
+		return new JSONResponse(array('error' => $error,
+				'return' => isset($msgs)));
+	}
+	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
+	public function setMessageDeletedTo(){
+	
+		$msg_id = $this->params("msg_id");
+		$msg = new MessageRepository();
+		$msgs = $msg->setMessageDeletedTo($msg_id);
+		$error = "";
+	
+		return new JSONResponse(array('error' => $error,
+				'return' => isset($msgs)));
+	}
+	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function setAllMessagesRead(){
 		
 		$user = $this->params("user");
@@ -160,7 +215,11 @@ class MessageController extends Controller{
 		return new JSONResponse(array('error' => $error,
 									'return' => $msgs));
 	}
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function hasUnreadMessage(){
 		
 		$user = $this->params("user");
@@ -181,7 +240,11 @@ class MessageController extends Controller{
 		return new JSONResponse(array('error' => $error,
 									'return' => $msgs));
 	}
-	
+	/**
+	 * @IsAdminExemption
+	 * @IsSubAdminExemption
+	 * @Ajax
+	 */
 	public function unreadMessageCount(){
 		
 		$user = $this->params("user");

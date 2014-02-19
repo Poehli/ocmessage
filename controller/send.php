@@ -33,7 +33,7 @@ foreach ($users as $user){
 	}
 	
 	
-	$message = new \OCA\test\Controller\MessagesQuery();
+	$message = new \OCA\test\();
 	$ok = $message->sendMessage($user, $request->msg_subject, $request->msg_content);
 
 

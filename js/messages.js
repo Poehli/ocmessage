@@ -23,7 +23,6 @@ msg.controller("tabCtrl", ["$scope", function ($scope){
 }]);
 
 msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
-
 	$http(	{method:"post", 
 				url: route.generate('ocmessage_getMessages', {user: ""})
 			})
@@ -45,7 +44,20 @@ msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
 			
 		}).error(function(data){alert("error:"+data.error);});
 	}
+	
+	$scope.deleteMessage = function ( id ){
+		$http({method:"post", url: route.generate('ocmessage_deleteTo', {msg_id: id})}).success(function (data){
+			
+		}).error(function(data){alert("error:"+data.error);});
 		
+		for (var i = 0; i < $scope.messages.length; i++){
+			if ($scope.messages[i].message_id == id){
+				$scope.messages.splice(i, 1);
+				break;
+			}
+		}
+	}
+	
 	$scope.humanTime = function( phpTimestamp ){
 		var timestamp = phpTimestamp*1000;
 		
@@ -105,7 +117,9 @@ msg.controller("msgCtrl", ["$scope", "$http", function($scope, $http){
 	$scope.msg_subject = "Betreff";
 	$scope.msg_content = "Nachricht";
 	$scope.send = function (){
-		$http({method:"post", url: "controller/send.php",
+		$http({
+			method:"post", 
+			url: route.generate('ocmessage_sendMessage'),
 			data: {msg_subject: $scope.msg_subject,
 				msg_content: $scope.msg_content, 
 				msg_to: $scope.msg_to}})

@@ -60,4 +60,15 @@ $this->create('ocmessage_unreadMessageCount', '/message/unreadMessageCount')->ac
 	App::main('MessageController', 'unreadMessageCount', $params, new DIContainer());
 }
 );
-
+$this->create('ocmessage_deleteFrom', '/message/deleteFrom')->action(
+		function($params){
+	// call the index method on the class PageController
+	App::main('MessageController', 'setMessageDeletedFrom', $params, new DIContainer());
+}
+);
+$this->create('ocmessage_deleteTo', '/message/deleteTo')->action(
+		function($params){
+	// call the index method on the class PageController
+	App::main('MessageController', 'setMessageDeletedTo', $params, new DIContainer());
+}
+);

@@ -17,18 +17,18 @@ class MessageRepository {
 	}
 	
 	public function getMessages(){
-		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_to=?");
-		return $query->execute(array($this->userId))->fetchAll();
+		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_to=? AND message_delto=?");
+		return $query->execute(array($this->userId, 0))->fetchAll();
 	}
 	
 	public function getSendMessages(){
-		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_owner=?");
-		return $query->execute(array($this->userId))->fetchAll();
+		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_owner=? AND message_delfrom=?");
+		return $query->execute(array($this->userId, 0))->fetchAll();
 	}
 	
 	public function getUnreadMessages(){
-		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_to=? AND message_read=?");
-		return $query->execute(array($this->userId, "0"))->fetchAll();
+		$query = DB::prepare("SELECT * FROM *PREFIX*msg WHERE message_to=? AND message_read=? AND message_delto=?");
+		return $query->execute(array($this->userId, "0", 0))->fetchAll();
 	}
 	
 	
@@ -53,6 +53,16 @@ class MessageRepository {
 	
 	public function setMessageRead($msg_id){
 		$query = DB::prepare("UPDATE *PREFIX*msg SET message_read=? WHERE message_id=?");
+		return $query->execute(array("1",$msg_id));
+	}
+	
+	public function setMessageDeletedTo($msg_id){
+		$query = DB::prepare("UPDATE *PREFIX*msg SET message_delto=? WHERE message_id=?");
+		return $query->execute(array("1",$msg_id));
+	}
+	
+	public function setMessageDeletedFrom($msg_id){
+		$query = DB::prepare("UPDATE *PREFIX*msg SET message_delfrom=? WHERE message_id=?");
 		return $query->execute(array("1",$msg_id));
 	}
 	
