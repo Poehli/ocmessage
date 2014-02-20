@@ -40,7 +40,7 @@
 	margin:10px;
 	padding: 10px;
 	min-width: 80%;
-	max-height: 80%;
+	max-height: 20%;
 	overflow: auto;
 	float:left;
 	clear:both;
@@ -85,6 +85,8 @@
 	left: 51px;
 	background-color: white;
 	width: 80%;
+	max-height: 80%;
+	overflow: auto;
 	-webkit-border-radius: 0 5px 5px 5px;
 	border-radius: 0 5px 5px 5px;
 	-webkit-box-shadow: 2px 2px 1px 0 #C4C4C4;
@@ -145,7 +147,14 @@ box-shadow: 2px 2px 1px 0 #C4C4C4;
 .right{
 	border-width: 1px;
 	border-color:#C4C4C4;
-	
 	-webkit-border-radius: 0 5px 0 0;
-	border-radius: 0 5px 0 0;}
+	border-radius: 0 5px 0 0;
+}
 	
+	
+.loading{
+	background-image: url("../img/loading.gif");
+	background-position: center;
+	min-height: 100px;
+	min-width: 80%;
+}	

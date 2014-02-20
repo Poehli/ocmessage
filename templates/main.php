@@ -19,12 +19,12 @@
 	</div>
 	
 	<div ng-show="isTab('read')">
-  		<div class="message_wrapper"  ng-controller="msgCtrl">	
+  		<div class="message_wrapper"  ng-controller="msgReadCtrl" ng-class="{loading: loading}">	
   			<div ng-repeat="message in messages">
   				<span class="message">
   					<h2 class="msg_subject" ng-click="markRead(message.message_id); msg_message.message_id = 'true'" ng-init="msg_message.message_id = 'false'">{{ message.message_subject }}</h2>
   					<span class="msg_time">{{ humanTime(message.message_timestamp) }}</span>
-  					<p class="msg_content" ng-show="msg_message.message_id == 'true'">{{ message.message_content }}</p> 
+  					<p class="msg_content" ng-show="msg_message.message_id == 'true'" ng-bind-html="message.message_content"></p> 
   					<button ng-click="deleteMessage(message.message_id)">Löschen</button>
   				</span>
   			</div>
@@ -33,7 +33,7 @@
   	
   	<div ng-show="isTab('write')"> 
   		<div class="message_wrapper">
-  			<div ng-controller="msgCtrl">
+  			<div ng-controller="msgSendCtrl">
   				<span class="message">
   					To: <input type="text" ng-model="msg_to" ng-value="getUsers()" /><br>
   					Subject: <input type="text" ng-model="msg_subject" /><br>

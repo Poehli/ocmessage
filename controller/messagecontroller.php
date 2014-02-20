@@ -23,11 +23,17 @@ class MessageController extends Controller{
 		if (!isset($user)){
 			$user = "";
 		}
+		
+		
 		$error = "";
 		
 		if ($user == "" || User::userExists($user)){
 			$msg = new MessageRepository();
 			$msgs = $msg->getMessages();
+			
+			for ($i = 0; $i < sizeof($msgs); $i++){
+				$msgs[$i]["message_content"] = html_entity_decode($msgs[$i]["message_content"]);
+			}
 			
 			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
