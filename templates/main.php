@@ -24,7 +24,7 @@
   				<span class="message">
   					<h2 class="msg_subject" ng-click="markRead(message.message_id); msg_message.message_id = 'true'" ng-init="msg_message.message_id = 'false'">{{ message.message_subject }}</h2>
   					<span class="msg_time">{{ humanTime(message.message_timestamp) }}</span>
-  					<p class="msg_content" ng-show="msg_message.message_id == 'true'" ng-bind-html="message.message_content"></p> 
+  					<p class="msg_content" ng-show="msg_message.message_id == 'true'" >{{ message.message_content }}</p> 
   					<button ng-click="deleteMessage(message.message_id)">Löschen</button>
   				</span>
   			</div>
