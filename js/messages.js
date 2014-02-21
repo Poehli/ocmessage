@@ -1,4 +1,4 @@
-var msg = angular.module("message",["OC"]);
+var msg = angular.module("message",["OC", "ngSanitize"]);
 var route = OC.Router;
 
 var humanTime = function( phpTimestamp ){

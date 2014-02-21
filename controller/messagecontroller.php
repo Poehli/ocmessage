@@ -31,10 +31,7 @@ class MessageController extends Controller{
 			$msg = new MessageRepository();
 			$msgs = $msg->getMessages();
 			
-			for ($i = 0; $i < sizeof($msgs); $i++){
-				$msgs[$i]["message_content"] = html_entity_decode($msgs[$i]["message_content"]);
-			}
-			
+
 			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
 		} else {
@@ -133,7 +130,7 @@ class MessageController extends Controller{
 		
 		
 			$message = new \OCA\OCMessage\Db\MessageRepository();
-			$ok = $message->sendMessage($user, $this->params("msg_subject"), $this->params("msg_content"));
+			$ok = $message->sendMessage($user, $this->params("msg_subject"), htmlentities($this->params("msg_content")));
 		
 		
 			if (!isset($ok) || !$ok){
