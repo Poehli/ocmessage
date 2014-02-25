@@ -8,11 +8,30 @@ use \OCA\AppFramework\Http\Request;
 use \OCA\AppFramework\Http\JSONResponse;
 use \OCP\User;
 use \OCA\OCMessage\Db\MessageRepository;
+use \OCA\OCMessage\DependencyInjection\DIContainer;
+use \OCA\OCMessage\Controller\BBCodes;
 
 class MessageController extends Controller{
 	public function __construct(API $api,Request $request){
 		parent::__construct($api, $request);
 	}
+	
+	
+	private function convertBBs($msg){
+		$bbs =new \OCA\OCMessage\Controller\BBCodes($msg);
+		
+		$bbs->addBBSet("br","br");
+		$bbs->addBBSet("url=%a%","/url","a href='%a%'","/a");
+		$bbs->addBBSet("url","/url","a href='$1'", "/a");
+		$bbs->addBBSet("b","/b","b","/b");
+		$bbs->addBBSet("u", "/u","u", "/u");
+		$bbs->addBBSet("color=%a%","/color","font color='%a%'","/font");
+		$bbs->addBBSet("size=%a%","/size","font size='%a%'","/font");
+		
+		return $bbs->getHTML();
+		return $msg;
+	}
+	
 	/**
 	 * @IsAdminExemption
 	 * @IsSubAdminExemption
@@ -30,7 +49,9 @@ class MessageController extends Controller{
 		if ($user == "" || User::userExists($user)){
 			$msg = new MessageRepository();
 			$msgs = $msg->getMessages();
-			
+			for ($i = 0; $i < sizeof($msgs); $i++) {
+				$msgs[$i]["message_content"] = $this->convertBBs($msgs[$i]["message_content"]);
+			}
 
 			return new JSONResponse(array('error' => $error,	
 										'return'  => $msgs));
@@ -99,11 +120,17 @@ class MessageController extends Controller{
 	 * @Ajax
 	 */
 	public function sendMessage(){
+		
+		
 		$splitsign = array(";", ",");
 		
 		$now = new \DateTime();
 		$now = $now->getTimestamp();
-		
+		$msg_cont = $this->params("msg_content");
+		trigger_error($msg_cont);
+		$msg_content = str_replace("\n","[br]", $msg_cont);
+		$msg_content = str_replace("\r","[br]", $msg_cont);
+		$msg_subject = htmlentities($this->params("msg_subject"));
 		$users = array($this->params('msg_to'));
 		
 		// Splitte alle User von der Übergabe
@@ -130,7 +157,7 @@ class MessageController extends Controller{
 		
 		
 			$message = new \OCA\OCMessage\Db\MessageRepository();
-			$ok = $message->sendMessage($user, $this->params("msg_subject"), htmlentities($this->params("msg_content")));
+			$ok = $message->sendMessage($user, $msg_subject , $msg_content);
 		
 		
 			if (!isset($ok) || !$ok){

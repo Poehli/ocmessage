@@ -1,6 +1,10 @@
 var msg = angular.module("message",["OC", "ngSanitize"]);
 var route = OC.Router;
 
+function replaceAll(find, replace, str) {
+	  return str.replace(new RegExp(find, 'g'), replace);
+}
+
 var humanTime = function( phpTimestamp ){
 	var timestamp = phpTimestamp*1000;
 
@@ -136,10 +140,10 @@ msg.controller("msgSendCtrl", ["$scope", "$http", function($scope, $http){
 			method:"post", 
 			url: route.generate('ocmessage_sendMessage'),
 			data: {msg_subject: $scope.msg_subject,
-				msg_content: $scope.msg_content, 
+				msg_content: $scope.msg_content.replace(/(\r\n|\n|\r)/g,"[br]"), 
 				msg_to: $scope.msg_to}})
 			.success(function(data){
-
+				alert(replaceAll("\n\r","[br]",$scope.msg_content.replace(/(\r\n|\n|\r)/g,"[br]")));
 			});
 		
 		// Testumgebung

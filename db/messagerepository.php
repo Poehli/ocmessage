@@ -4,7 +4,6 @@ namespace OCA\OCMessage\Db;
 
 use \OCP\User;
 use \OCP\DB;
-use \OCA\AppFramework\Controller\Controller;
 
 class MessageRepository {
 	private $userId;

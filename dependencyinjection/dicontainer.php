@@ -6,6 +6,7 @@ use \OCA\AppFramework\DependencyInjection\DIContainer as BaseContainer;
 
 use \OCA\OCMessage\Controller\PageController;
 use \OCA\OCMessage\Controller\MessageController;
+use \OCA\OCMessage\Controller\BBCodes;
 use \OCA\OCMessage\Db\MessageRepository;
 
 class DIContainer extends BaseContainer {
@@ -26,6 +27,10 @@ class DIContainer extends BaseContainer {
         
         $this['MessageController'] = $this->share(function($c){
         	return new MessageController($c["API"], $c['Request']);
+        });
+        
+        $this['BBCodes'] = $this->share(function($c){
+        	return new BBCodes();
         });
     }
 
