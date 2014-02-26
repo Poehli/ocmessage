@@ -28,6 +28,7 @@
   					<span class="msg_time">{{ humanTime(message.message_timestamp) }}</span>
   					<p class="msg_content" ng-show="msg_message.message_id == 'true'" ng-bind-html="message.message_content"></p> 
   					<button ng-click="deleteMessage(message.message_id)">Löschen</button>
+  					<button class="" ng-show="msg_message.message_id == 'true'" ng-click="reply(message.message_id)">Antworten</button>
   				</span>
   			</div>
 		</div>

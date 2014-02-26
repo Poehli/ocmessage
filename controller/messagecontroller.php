@@ -27,6 +27,7 @@ class MessageController extends Controller{
 		$bbs->addBBSet("u", "/u","u", "/u");
 		$bbs->addBBSet("color=%a%","/color","font color='%a%'","/font");
 		$bbs->addBBSet("size=%a%","/size","font size='%a%'","/font");
+		$bbs->addBBSet("quote","/quote","code","/code");
 		
 		return $bbs->getHTML();
 		return $msg;
@@ -49,8 +50,14 @@ class MessageController extends Controller{
 		if ($user == "" || User::userExists($user)){
 			$msg = new MessageRepository();
 			$msgs = $msg->getMessages();
+			if ($this->params("denyBB") == "true"){
+				return new JSONResponse(array('error' => $error,	
+										'return'  => $msgs));
+			}
+				
 			for ($i = 0; $i < sizeof($msgs); $i++) {
 				$msgs[$i]["message_content"] = $this->convertBBs($msgs[$i]["message_content"]);
+				
 			}
 
 			return new JSONResponse(array('error' => $error,	
@@ -127,7 +134,6 @@ class MessageController extends Controller{
 		$now = new \DateTime();
 		$now = $now->getTimestamp();
 		$msg_cont = $this->params("msg_content");
-		trigger_error($msg_cont);
 		$msg_content = str_replace("\n","[br]", $msg_cont);
 		$msg_content = str_replace("\r","[br]", $msg_cont);
 		$msg_subject = htmlentities($this->params("msg_subject"));
