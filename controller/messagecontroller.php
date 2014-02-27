@@ -219,8 +219,14 @@ class MessageController extends Controller{
 		$msg_id = $this->params("msg_id");
 		$msg = new MessageRepository();
 		$msgs = $msg->setMessageDeletedTo($msg_id);
+		
+		
 		$error = "";
-	
+		
+		if ($msgs == false){
+			$error = "could not delete Message! (ID: $msg_id)";
+		}
+		
 		return new JSONResponse(array('error' => $error,
 				'return' => isset($msgs)));
 	}

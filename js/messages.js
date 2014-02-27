@@ -78,6 +78,7 @@ return msg;
 
 
 
+//Controller für Tabs
 msg.controller("tabCtrl", ["$scope", "message", function ($scope, message){
 
 	$scope.tabName = "read";
@@ -103,6 +104,63 @@ msg.controller("tabCtrl", ["$scope", "message", function ($scope, message){
 	})
 }]);
 
+
+//Controller für Gesendete Nachrichten Tab
+msg.controller("msgSentCtrl", ["$scope", "$http", "message", function($scope, $http, message){
+	$scope.loading = true;
+	$http(	{method:"post",
+		url: route.generate('ocmessage_getMessages', {user: ""})
+	})
+	.success(
+			function (data){
+				if (data.error !== ""){
+					alert("Error: "+ data.error);
+				} else {
+					$scope.messages = data.return;
+				}
+				$scope.loading = false;
+			}
+	)
+	.error(function(data){
+		alert("error:"+data.error);
+	});
+
+	$scope.msgCount = function (){
+		return $scope.messages.length;
+	}
+
+	$scope.forward = function ( msg_id ){
+		message.broadcastMessage( msg_id );
+	}
+
+	$scope.toggleVisible = function (dom_msg_id){
+		alert("$scope.msg_"+dom_msg_id);
+		if (eval("$scope.msg_"+dom_msg_id+" == 'true'")){
+			return eval("$scope.msg_"+dom_msg_id+" = 'false'");
+		} else {
+			return eval("$scope.msg_"+dom_msg_id+" = 'true'");
+		}
+	}
+	
+	$scope.deleteMessage = function ( id ){
+		$http({method:"post", url: route.generate('ocmessage_deleteFrom', {msg_id: id})}).success(function (data){
+
+		}).error(function(data){alert("error:"+data.error);});
+
+		for (var i = 0; i < $scope.messages.length; i++){
+			if ($scope.messages[i].message_id == id){
+				$scope.messages.splice(i, 1);
+				break;
+			}
+		}
+	}
+
+	$scope.humanTime = humanTime;
+
+}]);
+
+
+//Controller für empfangene Nachrichten Tab
 msg.controller("msgReadCtrl", ["$scope", "$http", "message", function($scope, $http, message){
 	$scope.loading = true;
 	$http(	{method:"post",
@@ -147,7 +205,9 @@ msg.controller("msgReadCtrl", ["$scope", "$http", "message", function($scope, $h
 	
 	$scope.deleteMessage = function ( id ){
 		$http({method:"post", url: route.generate('ocmessage_deleteTo', {msg_id: id})}).success(function (data){
-
+			if (data.error !== ""){
+				alert("warning: "+data.error);
+			}
 		}).error(function(data){alert("error:"+data.error);});
 
 		for (var i = 0; i < $scope.messages.length; i++){
@@ -162,6 +222,8 @@ msg.controller("msgReadCtrl", ["$scope", "$http", "message", function($scope, $h
 
 }]);
 
+
+// Controller für sende Nachrichten Tab
 msg.controller("msgSendCtrl", ["$scope", "$http", "message", function($scope, $http, message){
 
 	$scope.getUsers = function (){

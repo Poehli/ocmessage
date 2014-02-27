@@ -17,6 +17,7 @@
 	<div class="tab_button_wrapper">
 		<div ng-click="setTab('read')" ng-class="activeTab('read')" class="tab_button left">Nachrichten lesen</div>
 		<div ng-click="setTab('write')" ng-class="activeTab('write')" class="tab_button middle">Nachricht verfassen</div>
+		<div ng-click="setTab('sent')" ng-class="activeTab('sent')" class="tab_button middle">Gesendete Nachrichten</div>
 		<div ng-click="setTab('archiv')" ng-class="activeTab('archiv')" class="tab_button right">Archiv</div>
 	</div>
 	
@@ -32,6 +33,19 @@
   				</span>
   			</div>
 		</div>
+  	</div>
+  	<div ng-show="isTab('sent')">
+  		<div class="message_wrapper" ng-controller="msgSentCtrl" ng-class="{loading: loading}">
+  			<div ng-repeat="message in messages">
+  				<span class="message">
+  					<h2 class="msg_subject" ng-click="markRead(message.message_id); msg_message.message_id = !msg_message.message_id" ng-init="msg_message.message_id = false">{{ message.message_subject }}</h2>
+  					<span class="msg_time">{{ humanTime(message.message_timestamp) }}</span>
+  					<p class="msg_content" ng-show="msg_message.message_id" ng-bind-html="message.message_content"></p> 
+  					<button ng-click="deleteMessage(message.message_id)">Löschen</button>
+  					<button class="" ng-show="msg_message.message_id" ng-click="forward(message.message_id)">Weiterleiten</button>
+  				</span>
+  			</div>
+  		</div>
   	</div>
   	
   	<div ng-show="isTab('write')"> 
