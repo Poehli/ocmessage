@@ -63,7 +63,6 @@ msg.broadcastMessage = function (msg_id) {
 					} else {
 						var data = data.return;
 						for (var i = 0; i < data.length; i++){
-							alert(data[i].message_id);
 							if (data[i].message_id == msg_id){
 								msg.message = data[i];
 								break;
@@ -115,7 +114,6 @@ msg.controller("msgReadCtrl", ["$scope", "$http", "message", function($scope, $h
 					alert("Error: "+ data.error);
 				} else {
 					$scope.messages = data.return;
-					alert($scope.messages[$scope.messages.length-1].message_content);
 				}
 				$scope.loading = false;
 			}
@@ -138,6 +136,15 @@ msg.controller("msgReadCtrl", ["$scope", "$http", "message", function($scope, $h
 		message.broadcastMessage( msg_id );
 	}
 
+	$scope.toggleVisible = function (dom_msg_id){
+		alert("$scope.msg_"+dom_msg_id);
+		if (eval("$scope.msg_"+dom_msg_id+" == 'true'")){
+			return eval("$scope.msg_"+dom_msg_id+" = 'false'");
+		} else {
+			return eval("$scope.msg_"+dom_msg_id+" = 'true'");
+		}
+	}
+	
 	$scope.deleteMessage = function ( id ){
 		$http({method:"post", url: route.generate('ocmessage_deleteTo', {msg_id: id})}).success(function (data){
 
@@ -185,7 +192,6 @@ msg.controller("msgSendCtrl", ["$scope", "$http", "message", function($scope, $h
 				msg_content: $scope.msg_content.replace(/(\r\n|\n|\r)/g,"[br]"),
 				msg_to: $scope.msg_to}})
 				.success(function(data){
-					alert(replaceAll("\n\r","[br]",$scope.msg_content.replace(/(\r\n|\n|\r)/g,"[br]")));
 				});
 
 //		Testumgebung
